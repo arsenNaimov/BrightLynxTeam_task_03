@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Третья задачка</title>
+    <script type="text/javascript">
+        var clickedCellId; //id первого выбранного пользователем элемента
+        var secondClickedCellId; //id второго выбранного пользователем элемента
+        var checked = false; // проверка "выбирал ли пользователь первый элемент"
+        var vsePolya = [11, 12, 13, 14, 21, 22, 23, 24, 31, 32, 33, 34, 41, 42, 43, 44];// test
+        var milisec = 0;
+        var sec = 0;
+        var min = 0;
+        var cels = ['11', '12', '13', '14', '21', '22', '23', '24', '31', '32', '33', '34', '41', '42', '43', '44'];
+        var pair;
+        //здесь генерю случайный цвет
+        function randomColor() {
+            return "rgb(" + Math.floor(Math.random() * 256) + "," + Math.floor(Math.random() * 256) + "," + Math.floor(Math.random() * 256) + ")";
+        }
+
+
+
+
+
+
+        function faradnza(cell) {
+
+            if (this.checked) {
+                this.secondClickedCellId = cell.id;
+                for (var i = 0; i < pair.length; i++) {
+                    //рисую цвет у второй клетки
+                    if (pair[i]['x'] == secondClickedCellId || pair[i]['y'] == secondClickedCellId) {
+                        document.getElementById(secondClickedCellId).style.background = pair[i]['color'];
+                    }
+                    //если id первого клика совподает по массиву с его парным id, то закрасить оба.
+                    if (pair[i]['x'] == clickedCellId && pair[i]['y'] == secondClickedCellId || pair[i]['y'] == clickedCellId && pair[i]['x'] == cell.id) {
+                        document.getElementById(pair[i]['x']).style.background = pair[i]['color'];
+                        document.getElementById(pair[i]['y']).style.background = pair[i]['color'];
+                        this.checked = false;
+
+                        for (var i = 0; i < this.vsePolya.length; i++) {
+                            if (this.vsePolya[i] == clickedCellId || this.vsePolya[i] == secondClickedCellId) {
+                                vsePolya.splice(i, 1);
+                                i--;
+                            }
+                        }
+
+                        if (this.vsePolya.length == 0) {
+                            alert("Вы выиграли!\nЗатраченое время: " + this.min + ':' + this.sec + '.' + this.milisec);
+                            location.reload();
+                        }
+                        clickedCellId = 0;
+                        secondClickedCellId = 0;
+                        // Если нет, то досвидания.
+                    } else {
+
+                        setTimeout(function () {
+                            if (secondClickedCellId) { document.getElementById(secondClickedCellId).style.background = ''; }
+                            if (clickedCellId) { document.getElementById(clickedCellId).style.background = ''; }
+
+                        }, 100);
+                        this.checked = false;
+
+
+                    }
+
+                }
+                //сюда попадаем, если пользователь выбирает первый элемент из пары.
+            } else {
+                for (var i = 0; i < pair.length; i++) {
+
+                    if (pair[i]['x'] == clickedCellId && pair[i]['y'] == secondClickedCellId || pair[i]['y'] == clickedCellId && pair[i]['x'] == cell.id) {
+                        document.getElementById(cell.id).style.background = pair[i]['color']
+                    }
+                }
+
+
+                this.clickedCellId = cell.id;
+                this.checked = true;
+                for (var i = 0; i < pair.length; i++) {
+                    if (pair[i]['x'] == clickedCellId || pair[i]['y'] == clickedCellId) {
+                        document.getElementById(clickedCellId).style.background = pair[i]['color'];
+
+                    }
+                }
+            }
+        }
+
+
+
+        function start() {
+            //Случайные пары
+            this.cels.sort(function () { return 0.5 - Math.random() });
+            this.pair = [
+                { x: cels[0], y: cels[1], color: randomColor() },
+                { x: cels[2], y: cels[3], color: randomColor() },
+                { x: cels[4], y: cels[5], color: randomColor() },
+                { x: cels[6], y: cels[7], color: randomColor() },
+                { x: cels[8], y: cels[9], color: randomColor() },
+                { x: cels[10], y: cels[11], color: randomColor() },
+                { x: cels[12], y: cels[13], color: randomColor() },
+                { x: cels[14], y: cels[15], color: randomColor() }
+            ];
+
+            //отключаю клавишу старт после нажатия
+            document.getElementById('start').disabled = 'true';
+
+            //таймер
+
+            setInterval(timer, 10)
+            function timer() {
+                ++milisec;
+                document.getElementById('milisec').innerHTML = milisec;
+                if (milisec > 99) {
+                    ++sec;
+                    document.getElementById('sec').innerHTML = sec;
+                    milisec = 0;
+                }
+
+                if (sec > 59) {
+                    ++min;
+                    document.getElementById('min').innerHTML = min;
+                    sec = 0;
+                }
+                if (min > 59) {
+                    min = 0;
+                    document.getElementById('min').innerHTML = min;
+                }
+            }
+
+        }
+
+
+    </script>
+    <style>
+        div {
+            width: 600px;
+            padding: 10px;
+            border: solid 3px rgb(235, 231, 231);
+        }
+
+        tr,
+        td {
+            height: 150px;
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <table border="1" width="600px">
+            <tr>
+                <td id="11" onclick="faradnza(this)"></td>
+                <td id="12" onclick="faradnza(this)"></td>
+                <td id="13" onclick="faradnza(this)"></td>
+                <td id="14" onclick="faradnza(this)"></td>
+            </tr>
+            <tr>
+                <td id="21" onclick="faradnza(this)"></td>
+                <td id="22" onclick="faradnza(this)"></td>
+                <td id="23" onclick="faradnza(this)"></td>
+                <td id="24" onclick="faradnza(this)"></td>
+            </tr>
+            <tr>
+                <td id="31" onclick="faradnza(this)"></td>
+                <td id="32" onclick="faradnza(this)"></td>
+                <td id="33" onclick="faradnza(this)"></td>
+                <td id="34" onclick="faradnza(this)"></td>
+            </tr>
+            <tr>
+                <td id="41" onclick="faradnza(this)"></td>
+                <td id="42" onclick="faradnza(this)"></td>
+                <td id="43" onclick="faradnza(this)"></td>
+                <td id="44" onclick="faradnza(this)"></td>
+            </tr>
+        </table>
+        <br>
+        <button onclick="start()" id="start">Старт</button>
+        <br>
+        <label id="min">00</label>:<label id="sec">00</label>.<label id="milisec">00</label>
+    </div>
+</body>
+
+</html>
